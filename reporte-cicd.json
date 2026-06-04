@@ -1,18 +1,13 @@
 {
   "proyecto": "Login-con-JWT-y-SQL",
   "rama": "main",
-  "commit": "7a9b862db3839e88c6ddbb467cfb577285720000",
+  "commit": "cdfebd61458690cf904d0c4e5011501815dc7814",
   "pipeline": {
-    "estado": "SUCCESS",
-    "entorno": "PROD",
-    "duracion_segundos": 45,
-    "fecha_ejecucion": "2026-06-04T19:58:41Z",
-    "historial": ["SUCCESS", "SUCCESS", "SUCCESS", "SUCCESS", "SUCCESS"]
+    "estado": "failure",
+    "fecha_ejecucion": "2026-06-04T20:08:33Z"
   },
   "tests": {
-    "exitosos": 1,
-    "fallidos": 0,
-    "cobertura_codigo": "100%"
+    "info": "Ver logs de GitHub Actions para detalles de ejecución"
   },
-  "detalles": "Build completado. JWT y autenticación SQL integrados."
+  "detalles": "Build procesado automáticamente. Estado: failure"
 }
