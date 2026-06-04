@@ -1,15 +1,15 @@
 {
   "proyecto": "Login-con-JWT-y-SQL",
   "rama": "main",
-  "commit": "13f6228fb4d80a4937073276538d17f4abf690e9",
+  "commit": "83bab9006e1953e03c8a1ff0b6e8411d661cc6ff",
   "pipeline": {
     "estado": "success",
-    "fecha_ejecucion": "2026-06-04T20:22:14Z"
+    "fecha_ejecucion": "2026-06-04T20:33:17Z"
   },
   "tests": {
-    "exitosos": "1",
-    "fallidos": "0",
-    "cobertura_codigo": "N/A"
+    "exitosos": 0,
+    "fallidos": 0,
+    "cobertura_codigo": "0%"
   },
-  "detalles": "Resultado automático: success"
+  "detalles": "Build procesado. Estado final: success"
 }
