@@ -16,37 +16,41 @@ jobs:
     - name: Configurar Java 21
       uses: actions/setup-java@v3
       with:
-        distribution: 'temurin'
         java-version: '21'
+        distribution: 'temurin'
         cache: 'maven'
 
-    - name: Compilar
+    # Ejecutamos los tests REALES. Si fallan, el pipeline se detiene aquí.
+    - name: Compilar y Testear
       run: |
         chmod +x mvnw
-        ./mvnw package -DskipTests
+        ./mvnw clean test
 
+    # Este bloque se ejecuta SIEMPRE, incluso si el anterior falló, para reportar el estado real
     - name: Generar reporte JSON
+      if: always() 
       run: |
+        # Extraemos éxito/fallo del paso anterior
+        STATUS="${{ job.status }}"
+        
+        # (Opcional) Aquí podrías añadir lógica para leer el archivo XML de sure-fire reports
+        # Por ahora, reportamos el estado del job de forma dinámica
         echo '{
           "proyecto": "Login-con-JWT-y-SQL",
-          "rama": "main",
+          "rama": "${{ github.ref_name }}",
           "commit": "${{ github.sha }}",
           "pipeline": {
-            "estado": "SUCCESS",
-            "entorno": "PROD",
-            "duracion_segundos": 45,
-            "fecha_ejecucion": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'",
-            "historial": ["SUCCESS", "SUCCESS", "SUCCESS", "SUCCESS", "SUCCESS"]
+            "estado": "'$STATUS'",
+            "fecha_ejecucion": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'"
           },
           "tests": {
-            "exitosos": 1,
-            "fallidos": 0,
-            "cobertura_codigo": "100%"
+            "info": "Ver logs de GitHub Actions para detalles de ejecución"
           },
-          "detalles": "Build completado. JWT y autenticación SQL integrados."
+          "detalles": "Build procesado automáticamente. Estado: '$STATUS'"
         }' > reporte-cicd.json
 
     - name: Desplegar Reporte a GitHub Pages
+      if: always()
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         folder: .
