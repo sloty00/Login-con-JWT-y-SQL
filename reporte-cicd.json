@@ -1,15 +1,15 @@
 {
   "proyecto": "Login-con-JWT-y-SQL",
   "rama": "main",
-  "commit": "886d6af72152872621fa5cea6f850705106862d5",
+  "commit": "677299fe520ef4b74ee711b975124b0082432f38",
   "pipeline": {
     "estado": "success",
-    "fecha_ejecucion": "2026-06-04T20:51:24Z"
+    "fecha_ejecucion": "2026-06-04T22:02:48Z"
   },
   "tests": {
-    "exitosos": 0,
+    "exitosos": 1,
     "fallidos": 0,
-    "cobertura_codigo": "N/A"
+    "cobertura_codigo": "100"
   },
   "detalles": "Build completado. Tests omitidos por entorno CI."
 }
