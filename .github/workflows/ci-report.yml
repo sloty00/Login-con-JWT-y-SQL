@@ -1,11 +1,3 @@
-Para subsanar la inconsistencia y que tu Dashboard muestre datos uniformes (evitando el undefined), vamos a estandarizar la estructura del JSON. Aunque el if: always() nos da el estado, necesitamos que el Dashboard encuentre siempre las mismas "llaves" (exitosos, fallidos, etc.) para que no se rompa la interfaz.
-
-Aquí tienes la versión profesional y estandarizada para todos tus repositorios.
-
-1. El Workflow Estandarizado (ci-report.yml)
-Este código extrae el estado real y siempre entrega una estructura de datos completa que tu Dashboard puede entender:
-
-YAML
 name: Java CI & Monitor Report
 
 on:
