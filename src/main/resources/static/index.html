@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjectLogin - JWT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 330px;
+        }
+        h2 { margin-top: 0; color: #333; text-align: center; }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+        button:hover { background-color: #0056b3; }
+        .btn-secure { background-color: #28a745; }
+        .btn-secure:hover { background-color: #218838; }
+        p { margin-top: 15px; font-weight: bold; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Iniciar Sesión</h2>
+    <form id="loginForm">
+        <input type="text" id="username" placeholder="Usuario" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
+        <button type="submit">Ingresar</button>
+    </form>
+    <p id="mensajeLogin"></p>
+</div>
+
+<div class="card">
+    <h2>Zona Protegida</h2>
+    <button id="btnDashboard" class="btn-secure">Solicitar Datos VIP</button>
+    <p id="mensajeDashboard"></p>
+</div>
+
+<script>
+    // --- ACCIÓN 1: LOGIN ---
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const usernameInput = document.getElementById('username').value;
+        const passwordInput = document.getElementById('password').value;
+        const msgLogin = document.getElementById('mensajeLogin');
+
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: usernameInput, password: passwordInput })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                
+                // Guardamos el token de forma temporal en el navegador
+                sessionStorage.setItem('mi_jwt_token', data.token);
+                
+                msgLogin.style.color = "green";
+                msgLogin.innerText = "✅ Autenticado con éxito. Token guardado.";
+            } else {
+                msgLogin.style.color = "red";
+                msgLogin.innerText = "❌ Credenciales incorrectas.";
+            }
+        } catch (error) {
+            msgLogin.style.color = "red";
+            msgLogin.innerText = "❌ Error al conectar.";
+        }
+    });
+
+    // --- ACCIÓN 2: SOLICITAR DATOS CON EL TOKEN ---
+    document.getElementById('btnDashboard').addEventListener('click', async () => {
+        const msgDash = document.getElementById('mensajeDashboard');
+        
+        // Rescatamos el token guardado del sessionStorage
+        const token = sessionStorage.getItem('mi_jwt_token');
+
+        try {
+            const response = await fetch('/api/auth/dashboard', {
+                method: 'GET',
+                headers: {
+                    // Aquí está el truco: Enviamos el token con el formato estandarizado "Bearer token"
+                    'Authorization': 'Bearer ' + token
+                }
+            });
+
+            const texto = await response.text();
+
+            if (response.ok) {
+                msgDash.style.color = "green";
+                msgDash.innerText = texto;
+            } else {
+                msgDash.style.color = "red";
+                msgDash.innerText = "🚫 " + texto;
+            }
+        } catch (error) {
+            msgDash.style.color = "red";
+            msgDash.innerText = "❌ Error de comunicación.";
+        }
+    });
+</script>
+
+</body>
+</html>
