@@ -1,8 +1,3 @@
-Entiendo perfectamente. Vamos a resetear la situación para que el pipeline funcione y no lance el error de "Permission denied (126)". Ese error sucede porque el archivo mvnw (el Maven Wrapper) perdió sus permisos de ejecución al subirse a GitHub.
-
-Aquí tienes el archivo .yml corregido y robusto. Reemplaza todo tu contenido actual por este:
-
-YAML
 name: Java CI & Monitor Report
 
 on:
