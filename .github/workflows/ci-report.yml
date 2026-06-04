@@ -20,32 +20,43 @@ jobs:
         distribution: 'temurin'
         cache: 'maven'
 
-    - name: Dar permisos y Compilar
+    - name: Compilar y Testear
       run: |
-        # Esto soluciona el error 126 (Permission denied)
         chmod +x mvnw
-        ./mvnw clean package -DskipTests=false || echo "Build/Tests fallaron, continuamos para reportar."
+        # Ejecutamos tests y permitimos que el paso continúe aunque fallen
+        ./mvnw clean package -DskipTests=false || echo "Tests fallaron, procesando resultados..."
 
-    - name: Generar reporte JSON
-      if: always() 
+    - name: Generar reporte JSON con datos reales
+      if: always()
       run: |
-        # Definimos el estado dinámico
-        STATUS="${{ job.status }}"
+        # Definimos variables buscando los archivos que genera Maven
+        # Ajusta esta ruta si tu nombre de clase de test es distinto
+        REPORT_FILE=$(find target/surefire-reports -name "*.txt" | head -n 1)
         
+        if [ -f "$REPORT_FILE" ]; then
+          EXITOSOS=$(grep -oP 'Tests run: \K\d+' $REPORT_FILE || echo "0")
+          FALLIDOS=$(grep -oP 'Failures: \K\d+' $REPORT_FILE || echo "0")
+          ERRORES=$(grep -oP 'Errors: \K\d+' $REPORT_FILE || echo "0")
+          TOTAL_FALLIDOS=$((FALLIDOS + ERRORES))
+        else
+          EXITOSOS=0
+          TOTAL_FALLIDOS=0
+        fi
+
         echo '{
           "proyecto": "'$(basename $GITHUB_REPOSITORY)'",
           "rama": "${{ github.ref_name }}",
           "commit": "${{ github.sha }}",
           "pipeline": {
-            "estado": "'$STATUS'",
+            "estado": "${{ job.status }}",
             "fecha_ejecucion": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'"
           },
           "tests": {
-            "exitosos": 0,
-            "fallidos": 0,
-            "cobertura_codigo": "0%"
+            "exitosos": '$EXITOSOS',
+            "fallidos": '$TOTAL_FALLIDOS',
+            "cobertura_codigo": "N/A"
           },
-          "detalles": "Build procesado. Estado final: '$STATUS'"
+          "detalles": "Pipeline ejecutado. Estado: ${{ job.status }}"
         }' > reporte-cicd.json
 
     - name: Desplegar Reporte a GitHub Pages
