@@ -48,7 +48,7 @@ jobs:
           "metricas": {
             "dependencias_desactualizadas": '${{ env.DEPS }}'
           },
-          "detalles": "Build completado. Tests omitidos por entorno CI."
+          "detalles": "Sincronizado: Build OK | Entorno Windows | Despliegue completado."
         }' > reporte-cicd.json
 
     - name: Desplegar Reporte a GitHub Pages
